@@ -29,7 +29,7 @@
 #include "highlighter.h"
 #include "commoninc.h"
 #include "basic_interpreter.h"
-#include "ui/longjobhelper.h"
+#include "utils/longjobhelper.h"
 
 #include "ui_mdichildform.h"
 

@@ -18,7 +18,7 @@
 
 #include <QApplication>
 
-#include "ui/longjobhelper.h"
+#include "utils/longjobhelper.h"
 
 
 LongJobHelper::LongJobHelper(QWidget *parent,

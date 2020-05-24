@@ -79,13 +79,17 @@ FORMS += i2mdialog.ui \
 # utils
 #######################################
 
-HEADERS += include/ui/longjobhelper.h \
-    include/utils/config.h \
-    include/utils/medium.h \
-    include/utils/configpage.h \
-    include/utils/configdialog.h
+HEADERS_API += \
+    $${EXPORT_PATH}/utils/longjobhelper.h \
+    $${EXPORT_PATH}/utils/config.h \
+    $${EXPORT_PATH}/utils/configpage.h \
+    $${EXPORT_PATH}/utils/configdialog.h
 
-SOURCES += ui/longjobhelper.cpp \
+HEADERS += \
+    include/utils/medium.h
+
+SOURCES += \
+    utils/longjobhelper.cpp \
     utils/config.cpp \
     utils/medium.cpp \
     utils/configpage.cpp \
@@ -96,6 +100,8 @@ win32:SOURCES += utils/medium_win.cpp
 
 FORMS += utils/configdialog.ui
 
+
+HEADERS += $${HEADERS_API}
 
 # resources
 #######################################

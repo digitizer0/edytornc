@@ -1,7 +1,27 @@
 # http://itnotesblog.ru/note.php?id=3
 
 
+CONFIG *= c++11 warn_on
+CONFIG -= debug_and_release debug_and_release_target
+
+# moc doesn't detect Q_OS_LINUX correctly, so add this to make it work
+linux*:DEFINES *= __linux__
+
+
 PROJECT_ROOT_PATH = $${PWD}
+
+IMPORT_PATH = $${PROJECT_ROOT_PATH}/3rdparty
+EXPORT_PATH = $${PROJECT_ROOT_PATH}/include
+
+INCLUDEPATH += $${EXPORT_PATH}
+INCLUDEPATH += $${IMPORT_PATH}
+INCLUDEPATH += $${IMPORT_PATH}/include
+
+
+LANG_PATH = $${PROJECT_ROOT_PATH}/lang
+# define locales for translation
+LANG_LIST = pl ca de fi cs_CZ es nl ru
+
 
 OS_SUFFIX = unc
 win32:  OS_SUFFIX = win
@@ -20,35 +40,22 @@ CONFIG(debug, debug|release) {
 
 BUILD_FLAG = $${OS_SUFFIX}.$${BUILD_FLAG}
 
-CONFIG *= c++11 warn_on
-CONFIG -= debug_and_release debug_and_release_target
-
-# moc doesn't detect Q_OS_LINUX correctly, so add this to make it work
-linux*:DEFINES *= __linux__
-
-LANG_PATH = $${PROJECT_ROOT_PATH}/lang
-# define locales for translation
-LANG_LIST = pl ca de fi cs_CZ es nl ru
-
-IMPORT_PATH = $${PROJECT_ROOT_PATH}/3rdparty
-IMPORT_LIBS_PATH = $${IMPORT_PATH}/lib/$${BUILD_FLAG}
-BIN_PATH = $${PROJECT_ROOT_PATH}/bin/$${BUILD_FLAG}
-
-BUILD_PATH = $${PROJECT_ROOT_PATH}/build/$${BUILD_FLAG}/$${TARGET}
+BUILD_BASE_PATH = $${PROJECT_ROOT_PATH}/build/$${BUILD_FLAG}
+BUILD_PATH = $${BUILD_BASE_PATH}/$${TARGET}
 RCC_DIR = $${BUILD_PATH}/rcc
 UI_DIR = $${BUILD_PATH}/ui
 MOC_DIR = $${BUILD_PATH}/moc
 OBJECTS_DIR = $${BUILD_PATH}/obj
 
+LIBS_PATH = $${BUILD_BASE_PATH}/libs
+BIN_PATH = $${PROJECT_ROOT_PATH}/bin/$${BUILD_FLAG}
+
 DESTDIR = $${BIN_PATH}
 CONFIG(staticlib) {
-    DESTDIR = $${IMPORT_LIBS_PATH}
+    DESTDIR = $${LIBS_PATH}
 }
 
-LIBS += -L$${IMPORT_LIBS_PATH} -L$${BIN_PATH}
-INCLUDEPATH += $${PROJECT_ROOT_PATH}/include
-INCLUDEPATH += $${IMPORT_PATH}
-INCLUDEPATH += $${IMPORT_PATH}/include
+LIBS += -L$${LIBS_PATH} -L$${BIN_PATH}
 
 
 #
