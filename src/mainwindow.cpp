@@ -25,7 +25,7 @@
 #include <QPrintPreviewDialog>
 #include <QtSerialPort/QtSerialPort>
 
-#include "edytornc.h"
+#include "mainwindow.h"
 #include "mdichild.h"
 #include "tooltips.h"
 #include "utils/medium.h"
@@ -33,18 +33,18 @@
 
 #define EXAMPLES_PATH             "/usr/share/edytornc/EXAMPLES"
 
-EdytorNc *EdytorNc::SINGLETON;
+MainWindow *MainWindow::SINGLETON;
 
-EdytorNc *EdytorNc::instance()
+MainWindow *MainWindow::instance()
 {
     if (SINGLETON == 0) {
-        SINGLETON = new EdytorNc(&Medium::instance());
+        SINGLETON = new MainWindow(&Medium::instance());
     }
 
     return SINGLETON;
 }
 
-EdytorNc::EdytorNc(Medium *medium)
+MainWindow::MainWindow(Medium *medium)
     : QMainWindow(NULL),
       mGeneralConfig(*medium->generalConfig()),
       mMWConfig(medium->generalConfig())
@@ -138,7 +138,7 @@ EdytorNc::EdytorNc(Medium *medium)
     }
 }
 
-EdytorNc::~EdytorNc()
+MainWindow::~MainWindow()
 {
     proc = findChild<QProcess *>();
 
@@ -152,7 +152,7 @@ EdytorNc::~EdytorNc()
     }
 }
 
-void EdytorNc::resizeEvent(QResizeEvent *event)
+void MainWindow::resizeEvent(QResizeEvent *event)
 {
         if(windowState() == Qt::WindowNoState && event->oldSize().isValid()){
             mMWConfig.size = event->size();
@@ -161,7 +161,7 @@ void EdytorNc::resizeEvent(QResizeEvent *event)
         QMainWindow::resizeEvent(event);
 }
 
-void EdytorNc::moveEvent(QMoveEvent *event)
+void MainWindow::moveEvent(QMoveEvent *event)
 {
     if(windowState() == Qt::WindowNoState){
         mMWConfig.pos = geometry().topLeft();
@@ -170,7 +170,7 @@ void EdytorNc::moveEvent(QMoveEvent *event)
     QMainWindow::moveEvent(event);
 }
 
-void EdytorNc::closeTab(int i)
+void MainWindow::closeTab(int i)
 {
     QTabBar *tab = mdiArea->findChild<QTabBar *>();
 
@@ -179,17 +179,17 @@ void EdytorNc::closeTab(int i)
     }
 }
 
-void EdytorNc::closeCurrentWindow()
+void MainWindow::closeCurrentWindow()
 {
     mdiArea->closeActiveSubWindow();
 }
 
-void EdytorNc::closeAllMdiWindows()
+void MainWindow::closeAllMdiWindows()
 {
     mdiArea->closeAllSubWindows();
 }
 
-void EdytorNc::closeEvent(QCloseEvent *event)
+void MainWindow::closeEvent(QCloseEvent *event)
 {
     if (commApp) {
         QMessageBox::StandardButton result = QMessageBox::warning(this,
@@ -248,7 +248,7 @@ void EdytorNc::closeEvent(QCloseEvent *event)
     }
 }
 
-MdiChild *EdytorNc::newFileFromTemplate()
+MdiChild *MainWindow::newFileFromTemplate()
 {
     QString fileName = "";
 
@@ -293,7 +293,7 @@ MdiChild *EdytorNc::newFileFromTemplate()
 //
 //**************************************************************************************************
 
-MdiChild *EdytorNc::newFile()
+MdiChild *MainWindow::newFile()
 {
     MdiChild *child = createMdiChild();
     child->newFile();
@@ -320,7 +320,7 @@ MdiChild *EdytorNc::newFile()
 //
 //**************************************************************************************************
 
-void EdytorNc::open()
+void MainWindow::open()
 {
     QFileInfo file;
     QMdiSubWindow *existing;
@@ -379,7 +379,7 @@ void EdytorNc::open()
     statusBar()->showMessage(tr("File loaded"), 5000);
 }
 
-void EdytorNc::openExample()
+void MainWindow::openExample()
 {
     QFileInfo file;
     QMdiSubWindow *existing;
@@ -446,7 +446,7 @@ void EdytorNc::openExample()
     statusBar()->showMessage(tr("File loaded"), 5000);
 }
 
-void EdytorNc::openFile(const QString fileName)
+void MainWindow::openFile(const QString fileName)
 {
     QFileInfo file;
 
@@ -479,7 +479,7 @@ void EdytorNc::openFile(const QString fileName)
     }
 }
 
-void EdytorNc::save()
+void MainWindow::save()
 {
     if (activeMdiChild()) {
         if (activeMdiChild()->save()) {
@@ -488,7 +488,7 @@ void EdytorNc::save()
     }
 }
 
-void EdytorNc::saveAll()
+void MainWindow::saveAll()
 {
     int i = 0;
 
@@ -517,14 +517,14 @@ void EdytorNc::saveAll()
     statusBar()->showMessage(tr("Saved %1 files").arg(i), 5000);
 }
 
-void EdytorNc::saveAs()
+void MainWindow::saveAs()
 {
     if (activeMdiChild() && activeMdiChild()->saveAs()) {
         statusBar()->showMessage(tr("File saved"), 5000);
     }
 }
 
-void EdytorNc::printFile()
+void MainWindow::printFile()
 {
 #ifndef QT_NO_PRINTER
 
@@ -556,7 +556,7 @@ void EdytorNc::printFile()
 #endif
 }
 
-void EdytorNc::filePrintPreview()
+void MainWindow::filePrintPreview()
 {
 #ifndef QT_NO_PRINTER
 
@@ -582,7 +582,7 @@ void EdytorNc::filePrintPreview()
 #endif
 }
 
-void EdytorNc::printPreview(QPrinter *printer)
+void MainWindow::printPreview(QPrinter *printer)
 {
 #ifndef QT_NO_PRINTER
 
@@ -598,21 +598,21 @@ void EdytorNc::printPreview(QPrinter *printer)
 #endif
 }
 
-void EdytorNc::cut()
+void MainWindow::cut()
 {
     if (activeMdiChild()) {
         activeMdiChild()->textEdit->cut();
     }
 }
 
-void EdytorNc::copy()
+void MainWindow::copy()
 {
     if (activeMdiChild()) {
         activeMdiChild()->textEdit->copy();
     }
 }
 
-void EdytorNc::findInFl()
+void MainWindow::findInFl()
 {
     if (findFiles == NULL) {
         findFiles = new FindInFiles(splitter);
@@ -635,7 +635,7 @@ void EdytorNc::findInFl()
     }
 }
 
-bool EdytorNc::findNext()
+bool MainWindow::findNext()
 {
     bool hasMdiChild = (activeMdiChild() != 0);
     bool found = false;
@@ -666,7 +666,7 @@ bool EdytorNc::findNext()
     return found;
 }
 
-bool EdytorNc::findPrevious()
+bool MainWindow::findPrevious()
 {
     bool hasMdiChild = (activeMdiChild() != 0);
     bool found = false;
@@ -698,7 +698,7 @@ bool EdytorNc::findPrevious()
     return found;
 }
 
-void EdytorNc::replaceNext()
+void MainWindow::replaceNext()
 {
     QPalette palette;
     bool hasMdiChildNotReadOnly = ((activeMdiChild() != 0) && !activeMdiChild()->isReadOnly());
@@ -731,7 +731,7 @@ void EdytorNc::replaceNext()
     replaceAllAct->setEnabled(true);
 }
 
-void EdytorNc::replacePrevious()
+void MainWindow::replacePrevious()
 {
     QPalette palette;
     bool hasMdiChildNotReadOnly = ((activeMdiChild() != 0) && !activeMdiChild()->isReadOnly());
@@ -765,7 +765,7 @@ void EdytorNc::replacePrevious()
     replaceAllAct->setEnabled(true);
 }
 
-void EdytorNc::replaceAll()
+void MainWindow::replaceAll()
 {
     QPalette palette;
     bool found = false;
@@ -801,14 +801,14 @@ void EdytorNc::replaceAll()
     replaceAllAct->setEnabled(true);
 }
 
-void EdytorNc::selAll()
+void MainWindow::selAll()
 {
     if (activeMdiChild()) {
         activeMdiChild()->textEdit->selectAll();
     }
 }
 
-void EdytorNc::config()
+void MainWindow::config()
 {
     _editor_properites opt;
     MdiChild *mdiChild;
@@ -867,7 +867,7 @@ void EdytorNc::config()
     delete setUpDialog;
 }
 
-void EdytorNc::readOnly()
+void MainWindow::readOnly()
 {
     if (activeMdiChild()) {
         activeMdiChild()->textEdit->setReadOnly(readOnlyAct->isChecked());
@@ -876,7 +876,7 @@ void EdytorNc::readOnly()
     updateMenus();
 }
 
-void EdytorNc::doBhc()
+void MainWindow::doBhc()
 {
     BHCDialog *bhcDialog;
     bhcDialog = findChild<BHCDialog *>();
@@ -888,21 +888,21 @@ void EdytorNc::doBhc()
     }
 }
 
-void EdytorNc::doInsertSpaces()
+void MainWindow::doInsertSpaces()
 {
     if (activeMdiChild()) {
         activeMdiChild()->doInsertSpace();
     }
 }
 
-void EdytorNc::doRemoveSpaces()
+void MainWindow::doRemoveSpaces()
 {
     if (activeMdiChild()) {
         activeMdiChild()->doRemoveSpace();
     }
 }
 
-void EdytorNc::goToLine(QString fileName, int line)
+void MainWindow::goToLine(QString fileName, int line)
 {
     if (activeMdiChild()) {
         QString childFileName = activeMdiChild()->filePath() + "/" + activeMdiChild()->fileName();
@@ -920,7 +920,7 @@ void EdytorNc::goToLine(QString fileName, int line)
     }
 }
 
-void EdytorNc::createDiffApp()
+void MainWindow::createDiffApp()
 {
     if (diffApp == NULL) {
         diffApp = new KDiff3App(splitter, "DiffApp", defaultMdiWindowProperites.extensions);
@@ -929,7 +929,7 @@ void EdytorNc::createDiffApp()
     }
 }
 
-void EdytorNc::doDiffL()
+void MainWindow::doDiffL()
 {
     QString fileName;
 
@@ -959,7 +959,7 @@ void EdytorNc::doDiffL()
     }
 }
 
-void EdytorNc::doDiffR()
+void MainWindow::doDiffR()
 {
     QString fileName;
 
@@ -989,7 +989,7 @@ void EdytorNc::doDiffR()
     }
 }
 
-void EdytorNc::diffTwoFiles(const QString filename1, const QString filename2)
+void MainWindow::diffTwoFiles(const QString filename1, const QString filename2)
 {
     createDiffApp();
 
@@ -1006,7 +1006,7 @@ void EdytorNc::diffTwoFiles(const QString filename1, const QString filename2)
     }
 }
 
-void EdytorNc::diffEditorFile()
+void MainWindow::diffEditorFile()
 {
     MdiChild *child = activeMdiChild();
 
@@ -1064,7 +1064,7 @@ void EdytorNc::diffEditorFile()
     }
 }
 
-void EdytorNc::doDiff()
+void MainWindow::doDiff()
 {
     QString fileName;
 
@@ -1089,14 +1089,14 @@ void EdytorNc::doDiff()
     }
 }
 
-void EdytorNc::doRemoveEmptyLines()
+void MainWindow::doRemoveEmptyLines()
 {
     if (activeMdiChild()) {
         activeMdiChild()->doRemoveEmptyLines();
     }
 }
 
-void EdytorNc::doRemoveByRegExp()
+void MainWindow::doRemoveByRegExp()
 {
     if (activeMdiChild()) {
         activeMdiChild()->doRemoveTextByRegExp(QStringList() <<
@@ -1104,14 +1104,14 @@ void EdytorNc::doRemoveByRegExp()
     }
 }
 
-void EdytorNc::doInsertEmptyLines()
+void MainWindow::doInsertEmptyLines()
 {
     if (activeMdiChild()) {
         activeMdiChild()->doInsertEmptyLines();
     }
 }
 
-void EdytorNc::doInsertDot()
+void MainWindow::doInsertDot()
 {
     MdiChild *child;
 
@@ -1132,7 +1132,7 @@ void EdytorNc::doInsertDot()
     }
 }
 
-void EdytorNc::doRenumber()
+void MainWindow::doRenumber()
 {
 
     int startAt, inc, to, from, prec, mode;
@@ -1163,7 +1163,7 @@ void EdytorNc::doRenumber()
     delete (renumberDialog);
 }
 
-void EdytorNc::doSpeedFeed()
+void MainWindow::doSpeedFeed()
 {
     FeedsDialog *feedsDialog;
     feedsDialog = findChild<FeedsDialog *>();
@@ -1175,14 +1175,14 @@ void EdytorNc::doSpeedFeed()
     }
 }
 
-void EdytorNc::doChamfer()
+void MainWindow::doChamfer()
 {
     ChamferDialog *chamferDialog = new ChamferDialog(this);
     chamferDialog->move((geometry().x() + width()) - chamferDialog->width(), geometry().y() + 35);
     chamferDialog->show();
 }
 
-void EdytorNc::doTriangles()
+void MainWindow::doTriangles()
 {
     TriangleDialog *triangleDialog;
     triangleDialog = findChild<TriangleDialog *>();
@@ -1195,7 +1195,7 @@ void EdytorNc::doTriangles()
     }
 }
 
-void EdytorNc::doConvert()
+void MainWindow::doConvert()
 {
     I2MDialog *i2MDialog;
     i2MDialog = findChild<I2MDialog *>();
@@ -1207,7 +1207,7 @@ void EdytorNc::doConvert()
     }
 }
 
-void EdytorNc::doConvertProg()
+void MainWindow::doConvertProg()
 {
     MdiChild *child;
 
@@ -1230,7 +1230,7 @@ void EdytorNc::doConvertProg()
     delete (i2mProgDialog);
 }
 
-void EdytorNc::doCalc()
+void MainWindow::doCalc()
 {
     if (defaultMdiWindowProperites.calcBinary.isEmpty()) {
         QMessageBox::information(this, tr("Information"),
@@ -1249,14 +1249,14 @@ void EdytorNc::doCalc()
     }
 }
 
-void EdytorNc::deleteText()
+void MainWindow::deleteText()
 {
     if (activeMdiChild()) {
         activeMdiChild()->textEdit->textCursor().removeSelectedText();
     }
 }
 
-void EdytorNc::paste()
+void MainWindow::paste()
 {
     if (activeMdiChild()) {
         if (defaultMdiWindowProperites.underlineChanges) {
@@ -1270,21 +1270,21 @@ void EdytorNc::paste()
     }
 }
 
-void EdytorNc::undo()
+void MainWindow::undo()
 {
     if (activeMdiChild()) {
         activeMdiChild()->doUndo();
     }
 }
 
-void EdytorNc::redo()
+void MainWindow::redo()
 {
     if (activeMdiChild()) {
         activeMdiChild()->doRedo();
     }
 }
 
-void EdytorNc::activeWindowChanged(QMdiSubWindow *window)
+void MainWindow::activeWindowChanged(QMdiSubWindow *window)
 {
     Q_UNUSED(window);
     MdiChild *mdiChild;
@@ -1305,7 +1305,7 @@ void EdytorNc::activeWindowChanged(QMdiSubWindow *window)
     fileTreeViewChangeRootDir();
 }
 
-void EdytorNc::about()
+void MainWindow::about()
 {
     QMessageBox::about(this, trUtf8("About EdytorNC"),
                        trUtf8("The <b>EdytorNC</b> is text editor for CNC programmers.") +
@@ -1338,7 +1338,7 @@ void EdytorNc::about()
                               "MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.</i>"));
 }
 
-void EdytorNc::updateMenus()
+void MainWindow::updateMenus()
 {
     bool hasMdiChildNotReadOnly;
     bool hasSelection;
@@ -1435,7 +1435,7 @@ void EdytorNc::updateMenus()
     updateStatusBar();
 }
 
-void EdytorNc::updateCurrentSerialConfig()
+void MainWindow::updateCurrentSerialConfig()
 {
     int id;
     QDir dir;
@@ -1461,7 +1461,7 @@ void EdytorNc::updateCurrentSerialConfig()
     }
 }
 
-void EdytorNc::updateStatusBar()
+void MainWindow::updateStatusBar()
 {
     QTextBlock b;
     int column = 1;
@@ -1490,7 +1490,7 @@ void EdytorNc::updateStatusBar()
     }
 }
 
-void EdytorNc::updateWindowMenu()
+void MainWindow::updateWindowMenu()
 {
     QString text;
 
@@ -1531,7 +1531,7 @@ void EdytorNc::updateWindowMenu()
     }
 }
 
-MdiChild *EdytorNc::createMdiChild()
+MdiChild *MainWindow::createMdiChild()
 {
     MdiChild *child = new MdiChild(this);
     mdiArea->addSubWindow(child);
@@ -1561,7 +1561,7 @@ MdiChild *EdytorNc::createMdiChild()
     return child;
 }
 
-void EdytorNc::createActions()
+void MainWindow::createActions()
 {
     newAct = new QAction(QIcon(":/images/filenew.png"), tr("&New"), this);
     newAct->setShortcut(QKeySequence::New);
@@ -1885,7 +1885,7 @@ void EdytorNc::createActions()
     connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 }
 
-void EdytorNc::createMenus()
+void MainWindow::createMenus()
 {
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(newAct);
@@ -1991,7 +1991,7 @@ void EdytorNc::createMenus()
     helpMenu->addAction(aboutQtAct);
 }
 
-void EdytorNc::createToolBars()
+void MainWindow::createToolBars()
 {
     fileToolBar = addToolBar(tr("File"));
     fileToolBar->setObjectName("File");
@@ -2058,7 +2058,7 @@ void EdytorNc::createToolBars()
     windowToolBar->addAction(nextAct);
 }
 
-void EdytorNc::createStatusBar()
+void MainWindow::createStatusBar()
 {
     labelStat1 = new QLabel("    ");
 
@@ -2115,7 +2115,7 @@ void EdytorNc::createStatusBar()
     statusBar()->showMessage(tr("Ready"));
 }
 
-void EdytorNc::setHighLightMode(int mode)
+void MainWindow::setHighLightMode(int mode)
 {
     bool ok;
     bool hasMdiChild = (activeMdiChild() != 0);
@@ -2128,7 +2128,7 @@ void EdytorNc::setHighLightMode(int mode)
     }
 }
 
-void EdytorNc::readSettings()
+void MainWindow::readSettings()
 {
     QSettings &settings = *Medium::instance().settings();
 
@@ -2276,7 +2276,7 @@ void EdytorNc::readSettings()
     settings.endGroup();
 }
 
-void EdytorNc::writeSettings()
+void MainWindow::writeSettings()
 {
     QSettings &settings = *Medium::instance().settings();
 
@@ -2382,7 +2382,7 @@ void EdytorNc::writeSettings()
     }
 }
 
-MdiChild *EdytorNc::activeMdiChild()
+MdiChild *MainWindow::activeMdiChild()
 {
     if (QMdiSubWindow *activeSubWindow = mdiArea->activeSubWindow()) {
         return qobject_cast<MdiChild *>(activeSubWindow->widget());
@@ -2391,7 +2391,7 @@ MdiChild *EdytorNc::activeMdiChild()
     return 0;
 }
 
-QMdiSubWindow *EdytorNc::findMdiChild(const QString &fileName)
+QMdiSubWindow *MainWindow::findMdiChild(const QString &fileName)
 {
     QString canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
 
@@ -2410,7 +2410,7 @@ QMdiSubWindow *EdytorNc::findMdiChild(const QString &fileName)
     return 0;
 }
 
-void EdytorNc::setActiveSubWindow(QWidget *window)
+void MainWindow::setActiveSubWindow(QWidget *window)
 {
     if (!window) {
         return;
@@ -2419,7 +2419,7 @@ void EdytorNc::setActiveSubWindow(QWidget *window)
     mdiArea->setActiveSubWindow(qobject_cast<QMdiSubWindow *>(window));
 }
 
-void EdytorNc::loadFile(_editor_properites options, bool checkAlreadyLoaded)
+void MainWindow::loadFile(_editor_properites options, bool checkAlreadyLoaded)
 {
     QFileInfo file;
 
@@ -2449,7 +2449,7 @@ void EdytorNc::loadFile(_editor_properites options, bool checkAlreadyLoaded)
     }
 }
 
-void EdytorNc::updateRecentFiles(const QString &filename)
+void MainWindow::updateRecentFiles(const QString &filename)
 {
     m_recentFiles.prepend(filename);
 
@@ -2462,7 +2462,7 @@ void EdytorNc::updateRecentFiles(const QString &filename)
     updateRecentFilesMenu();
 }
 
-void EdytorNc::fileOpenRecent(QAction *act)
+void MainWindow::fileOpenRecent(QAction *act)
 {
     defaultMdiWindowProperites.readOnly = defaultMdiWindowProperites.defaultReadOnly;
     defaultMdiWindowProperites.geometry = QByteArray();
@@ -2474,7 +2474,7 @@ void EdytorNc::fileOpenRecent(QAction *act)
     loadFile(defaultMdiWindowProperites);
 }
 
-void EdytorNc::updateRecentFilesMenu()
+void MainWindow::updateRecentFilesMenu()
 {
     QAction *newAc;
 
@@ -2490,7 +2490,7 @@ void EdytorNc::updateRecentFilesMenu()
     }
 }
 
-void EdytorNc::loadFoundedFile(const QString &fileName)
+void MainWindow::loadFoundedFile(const QString &fileName)
 {
     QFileInfo file;
 
@@ -2524,7 +2524,7 @@ void EdytorNc::loadFoundedFile(const QString &fileName)
     }
 }
 
-void EdytorNc::messReceived(const QString &text)
+void MainWindow::messReceived(const QString &text)
 {
     QString str = text;
     QStringList list1 = str.split(";", QString::SkipEmptyParts);
@@ -2536,7 +2536,7 @@ void EdytorNc::messReceived(const QString &text)
     emit needToShow();
 }
 
-void EdytorNc::createFindToolBar()
+void MainWindow::createFindToolBar()
 {
     QString selText;
     QTextCursor cursor;
@@ -2671,7 +2671,7 @@ void EdytorNc::createFindToolBar()
     findEdit->selectAll();
 }
 
-void EdytorNc::closeFindToolBar()
+void MainWindow::closeFindToolBar()
 {
     if (activeMdiChild()) {
         activeMdiChild()->setFocus(Qt::MouseFocusReason);
@@ -2688,7 +2688,7 @@ void EdytorNc::closeFindToolBar()
     //findToolBar = NULL;
 }
 
-void EdytorNc::findTextChanged()
+void MainWindow::findTextChanged()
 {
     bool hasMdiChild = (activeMdiChild() != 0);
     QTextCursor cursor;
@@ -2728,7 +2728,7 @@ void EdytorNc::findTextChanged()
     }
 }
 
-bool EdytorNc::eventFilter(QObject *obj, QEvent *ev)
+bool MainWindow::eventFilter(QObject *obj, QEvent *ev)
 {
     if ((obj == findEdit) || (obj == replaceEdit)) {
         if (ev->type() == QEvent::KeyPress) {
@@ -2765,7 +2765,7 @@ bool EdytorNc::eventFilter(QObject *obj, QEvent *ev)
     }
 }
 
-void EdytorNc::createSerialToolBar()
+void MainWindow::createSerialToolBar()
 {
     if (serialToolBar == NULL) {
         serialToolBar = new QToolBar(tr("Serial port toolbar"));
@@ -2848,7 +2848,7 @@ void EdytorNc::createSerialToolBar()
     updateCurrentSerialConfig();
 }
 
-void EdytorNc::closeSerialToolbar()
+void MainWindow::closeSerialToolbar()
 {
     serialToolBar->close();
     delete (serialToolBar);
@@ -2856,7 +2856,7 @@ void EdytorNc::closeSerialToolbar()
     showSerialToolBarAct->setChecked(false);
 }
 
-void EdytorNc::attachToDirButtonClicked(bool attach)
+void MainWindow::attachToDirButtonClicked(bool attach)
 {
     QFileInfo fileInfo;
     QFile file;
@@ -2889,12 +2889,12 @@ void EdytorNc::attachToDirButtonClicked(bool attach)
     }
 }
 
-void EdytorNc::deAttachToDirButtonClicked()
+void MainWindow::deAttachToDirButtonClicked()
 {
     attachToDirButtonClicked(false);
 }
 
-void EdytorNc::doCmpMacro()
+void MainWindow::doCmpMacro()
 {
     QString fileName, filePath, text;
 
@@ -2943,7 +2943,7 @@ void EdytorNc::doCmpMacro()
     }
 }
 
-void EdytorNc::createUserToolTipsFile()
+void MainWindow::createUserToolTipsFile()
 {
     QString fileName;
 
@@ -2992,7 +2992,7 @@ void EdytorNc::createUserToolTipsFile()
     }
 }
 
-void EdytorNc::createGlobalToolTipsFile()
+void MainWindow::createGlobalToolTipsFile()
 {
     QString fileName = writeTooltipFile();
 
@@ -3008,7 +3008,7 @@ void EdytorNc::createGlobalToolTipsFile()
     }
 }
 
-void EdytorNc::attachHighlighterToDirButtonClicked(bool attach)
+void MainWindow::attachHighlighterToDirButtonClicked(bool attach)
 {
     QFileInfo fileInfo;
     QFile file;
@@ -3042,17 +3042,17 @@ void EdytorNc::attachHighlighterToDirButtonClicked(bool attach)
     }
 }
 
-void EdytorNc::attachHighlightToDirActClicked()
+void MainWindow::attachHighlightToDirActClicked()
 {
     attachHighlighterToDirButtonClicked(true);
 }
 
-void EdytorNc::deAttachHighlightToDirActClicked()
+void MainWindow::deAttachHighlightToDirActClicked()
 {
     attachHighlighterToDirButtonClicked(false);
 }
 
-int EdytorNc::defaultHighlightMode(QString filePath)
+int MainWindow::defaultHighlightMode(QString filePath)
 {
     int id;
     QDir dir;
@@ -3078,7 +3078,7 @@ int EdytorNc::defaultHighlightMode(QString filePath)
     return MODE_AUTO;
 }
 
-void EdytorNc::projectAdd()
+void MainWindow::projectAdd()
 {
     QFileInfo file;
     QStandardItem *item;
@@ -3178,7 +3178,7 @@ void EdytorNc::projectAdd()
     statusBar()->showMessage(tr("Project opened"), 5000);
 }
 
-void EdytorNc::projectSave()
+void MainWindow::projectSave()
 {
     QString path, fileName;
     int fileCount;
@@ -3219,7 +3219,7 @@ void EdytorNc::projectSave()
     }
 }
 
-void EdytorNc::projectSaveAs()
+void MainWindow::projectSaveAs()
 {
     QString fileName = projectSelectName();
 
@@ -3235,7 +3235,7 @@ void EdytorNc::projectSaveAs()
     projectSave();
 }
 
-void EdytorNc::projectNew()
+void MainWindow::projectNew()
 {
     if (!maybeSaveProject()) {
         return;
@@ -3259,7 +3259,7 @@ void EdytorNc::projectNew()
     currentProjectModified = true;
 }
 
-void EdytorNc::projectTreeViewDoubleClicked(const QModelIndex &index)
+void MainWindow::projectTreeViewDoubleClicked(const QModelIndex &index)
 {
     QFileInfo file;
 
@@ -3295,7 +3295,7 @@ void EdytorNc::projectTreeViewDoubleClicked(const QModelIndex &index)
     }
 }
 
-void EdytorNc::fileTreeViewDoubleClicked(const QModelIndex &index)
+void MainWindow::fileTreeViewDoubleClicked(const QModelIndex &index)
 {
     QFileInfo file;
 
@@ -3337,7 +3337,7 @@ void EdytorNc::fileTreeViewDoubleClicked(const QModelIndex &index)
     }
 }
 
-QString EdytorNc::projectSelectName()
+QString MainWindow::projectSelectName()
 {
 #ifdef Q_OS_LINUX
     QString filters = tr("EdytorNC project file *.ncp (*.ncp)");
@@ -3356,7 +3356,7 @@ QString EdytorNc::projectSelectName()
     return file;
 }
 
-void EdytorNc::projectOpen()
+void MainWindow::projectOpen()
 {
     if (!maybeSaveProject()) {
         return;
@@ -3383,7 +3383,7 @@ void EdytorNc::projectOpen()
     projectLoad(fileName);
 }
 
-void EdytorNc::hidePanel()
+void MainWindow::hidePanel()
 {
     hSplitter->setUpdatesEnabled(false);
 
@@ -3410,7 +3410,7 @@ void EdytorNc::hidePanel()
     hSplitter->setUpdatesEnabled(true);
 }
 
-void EdytorNc::projectTreeRemoveItem()
+void MainWindow::projectTreeRemoveItem()
 {
     QStandardItem *item;
 
@@ -3433,7 +3433,7 @@ void EdytorNc::projectTreeRemoveItem()
     }
 }
 
-void EdytorNc::projectLoad(QString projectName)
+void MainWindow::projectLoad(QString projectName)
 {
     QFileInfo file;
     QIcon icon;
@@ -3508,7 +3508,7 @@ void EdytorNc::projectLoad(QString projectName)
     currentProjectModified = false;
 }
 
-bool EdytorNc::maybeSaveProject()
+bool MainWindow::maybeSaveProject()
 {
     if (currentProjectModified) {
         QMessageBox msgBox;
@@ -3543,7 +3543,7 @@ bool EdytorNc::maybeSaveProject()
     return true;
 }
 
-void EdytorNc::createFileBrowseTabs()
+void MainWindow::createFileBrowseTabs()
 {
     dirModel = new QFileSystemModel();
     dirModel->setResolveSymlinks(true);
@@ -3565,7 +3565,7 @@ void EdytorNc::createFileBrowseTabs()
     openFileTableWidget->setToolTip(tr("Open files"));
 }
 
-void EdytorNc::updateOpenFileList()
+void MainWindow::updateOpenFileList()
 {
     QTableWidgetItem *newItem;
     QFileInfo file;
@@ -3627,7 +3627,7 @@ void EdytorNc::updateOpenFileList()
     openFileTableWidget->setUpdatesEnabled(true);
 }
 
-void EdytorNc::openFileTableWidgetClicked(int x, int y)
+void MainWindow::openFileTableWidgetClicked(int x, int y)
 {
     QTableWidgetItem *item = openFileTableWidget->item(x, 1);
 
@@ -3643,7 +3643,7 @@ void EdytorNc::openFileTableWidgetClicked(int x, int y)
     }
 }
 
-void EdytorNc::fileTreeViewChangeRootDir()
+void MainWindow::fileTreeViewChangeRootDir()
 {
     QString path;
 
@@ -3682,7 +3682,7 @@ void EdytorNc::fileTreeViewChangeRootDir()
     fileTreeViewChangeRootDir(path);
 }
 
-void EdytorNc::fileTreeViewChangeRootDir(QString path)
+void MainWindow::fileTreeViewChangeRootDir(QString path)
 {
     fileTreeView->setRootIndex(dirModel->index(path));
     dirModel->setRootPath(path);
@@ -3695,7 +3695,7 @@ void EdytorNc::fileTreeViewChangeRootDir(QString path)
     fileTreeView->resizeColumnToContents(3);
 }
 
-bool EdytorNc::event(QEvent *event)
+bool MainWindow::event(QEvent *event)
 {
     QString key, text;
     QModelIndex index;
@@ -3767,7 +3767,7 @@ bool EdytorNc::event(QEvent *event)
     return QWidget::event(event);
 }
 
-void EdytorNc::doSplitPrograms()
+void MainWindow::doSplitPrograms()
 {
     MdiChild *activeWindow = activeMdiChild();
 
@@ -3803,42 +3803,42 @@ void EdytorNc::doSplitPrograms()
     QApplication::restoreOverrideCursor();
 }
 
-void EdytorNc::doBlockSkip()
+void MainWindow::doBlockSkip()
 {
     if (activeMdiChild()) {
         activeMdiChild()->blockSkip(true);
     }
 }
 
-void EdytorNc::doBlockSkip1()
+void MainWindow::doBlockSkip1()
 {
     if (activeMdiChild()) {
         activeMdiChild()->blockSkip(false, true);
     }
 }
 
-void EdytorNc::doBlockSkip2()
+void MainWindow::doBlockSkip2()
 {
     if (activeMdiChild()) {
         activeMdiChild()->blockSkip(false, false);
     }
 }
 
-void EdytorNc::doSemiComment()
+void MainWindow::doSemiComment()
 {
     if (activeMdiChild()) {
         activeMdiChild()->semiComment();
     }
 }
 
-void EdytorNc::doParaComment()
+void MainWindow::doParaComment()
 {
     if (activeMdiChild()) {
         activeMdiChild()->paraComment();
     }
 }
 
-void EdytorNc::displayCleanUpDialog()
+void MainWindow::displayCleanUpDialog()
 {
     MdiChild *editorWindow = activeMdiChild();
 
@@ -3856,7 +3856,7 @@ void EdytorNc::displayCleanUpDialog()
     }
 }
 
-void EdytorNc::doSwapAxes()
+void MainWindow::doSwapAxes()
 {
     QString first, second;
     double min, max, modi;
@@ -3888,7 +3888,7 @@ void EdytorNc::doSwapAxes()
     }
 }
 
-void EdytorNc::updateSessionMenus()
+void MainWindow::updateSessionMenus()
 {
     sessionsMenu->clear();
 
@@ -3908,7 +3908,7 @@ void EdytorNc::updateSessionMenus()
     sessionsMenu->addActions(actionGroup->actions());
 }
 
-void EdytorNc::changeSession(QAction *action)
+void MainWindow::changeSession(QAction *action)
 {
     QString name = action->text();
 
@@ -3923,7 +3923,7 @@ void EdytorNc::changeSession(QAction *action)
     loadSession(name);
 }
 
-void EdytorNc::loadSession(QString name)
+void MainWindow::loadSession(QString name)
 {
     QSettings &settings = *Medium::instance().settings();
     settings.beginGroup("Sessions");
@@ -3954,7 +3954,7 @@ void EdytorNc::loadSession(QString name)
     statusBar()->showMessage(tr("Session %1 loaded").arg(name), 5000);
 }
 
-void EdytorNc::saveSession(QString name)
+void MainWindow::saveSession(QString name)
 {
     QSettings &settings = *Medium::instance().settings();
     settings.beginGroup("Sessions");
@@ -3984,7 +3984,7 @@ void EdytorNc::saveSession(QString name)
     settings.endGroup();
 }
 
-void EdytorNc::sessionMgr()
+void MainWindow::sessionMgr()
 {
     sessionDialog *sesDialog = new sessionDialog(this);
     sesDialog->setSessionList(sessionList);
@@ -4007,7 +4007,7 @@ void EdytorNc::sessionMgr()
     delete (sesDialog);
 }
 
-void EdytorNc::savePrinterSettings(QPrinter *printer)
+void MainWindow::savePrinterSettings(QPrinter *printer)
 {
 #ifndef QT_NO_PRINTER
 
@@ -4029,7 +4029,7 @@ void EdytorNc::savePrinterSettings(QPrinter *printer)
 #endif
 }
 
-void EdytorNc::loadPrinterSettings(QPrinter *printer)
+void MainWindow::loadPrinterSettings(QPrinter *printer)
 {
 #ifndef QT_NO_PRINTER
 
@@ -4056,7 +4056,7 @@ void EdytorNc::loadPrinterSettings(QPrinter *printer)
 #endif
 }
 
-void EdytorNc::serialConfig()
+void MainWindow::serialConfig()
 {
     SerialPortConfigDialog *serialConfigDialog = new SerialPortConfigDialog(this,
             configBox->currentText());
@@ -4066,7 +4066,7 @@ void EdytorNc::serialConfig()
     }
 }
 
-void EdytorNc::loadSerialConfignames()
+void MainWindow::loadSerialConfignames()
 {
     int id;
     QStringList list;
@@ -4089,14 +4089,14 @@ void EdytorNc::loadSerialConfignames()
     settings.endGroup();
 }
 
-void EdytorNc::serialConfigTest()
+void MainWindow::serialConfigTest()
 {
     TransmissionDialog *trDialog = new TransmissionDialog(this);
 
     trDialog->show();
 }
 
-void EdytorNc::sendButtonClicked()
+void MainWindow::sendButtonClicked()
 {
     QString tx;
     MdiChild *activeWindow;
@@ -4123,7 +4123,7 @@ void EdytorNc::sendButtonClicked()
     QApplication::restoreOverrideCursor();
 }
 
-void EdytorNc::receiveButtonClicked()
+void MainWindow::receiveButtonClicked()
 {
     MdiChild *activeWindow;
 
@@ -4179,7 +4179,7 @@ void EdytorNc::receiveButtonClicked()
     QApplication::restoreOverrideCursor();
 }
 
-void EdytorNc::fileChanged(const QString fileName)
+void MainWindow::fileChanged(const QString fileName)
 {
     QMdiSubWindow *existing;
     MdiChild *mdiChild = NULL;
@@ -4221,7 +4221,7 @@ void EdytorNc::fileChanged(const QString fileName)
     }
 }
 
-void EdytorNc::startSerialPortServer()
+void MainWindow::startSerialPortServer()
 {
 
     QString fileName, path;
@@ -4263,7 +4263,7 @@ void EdytorNc::startSerialPortServer()
     }
 }
 
-void EdytorNc::tileSubWindowsVertycally()
+void MainWindow::tileSubWindowsVertycally()
 {
     if (mdiArea->subWindowList().isEmpty()) {
         return;
@@ -4280,7 +4280,7 @@ void EdytorNc::tileSubWindowsVertycally()
     }
 }
 
-void EdytorNc::clipboardChanged()
+void MainWindow::clipboardChanged()
 {
     QStandardItem *item;
     QFont font;
@@ -4342,7 +4342,7 @@ void EdytorNc::clipboardChanged()
     clipboardTreeView->expandAll();
 }
 
-void EdytorNc::clipboardTreeViewContextMenu(const QPoint &point)
+void MainWindow::clipboardTreeViewContextMenu(const QPoint &point)
 {
     Q_UNUSED(point);
 
@@ -4379,7 +4379,7 @@ void EdytorNc::clipboardTreeViewContextMenu(const QPoint &point)
     }
 }
 
-void EdytorNc::deleteFromClipboardButtonClicked()
+void MainWindow::deleteFromClipboardButtonClicked()
 {
     QStandardItem *item;
 
@@ -4401,7 +4401,7 @@ void EdytorNc::deleteFromClipboardButtonClicked()
     }
 }
 
-void EdytorNc::clipboardSave()
+void MainWindow::clipboardSave()
 {
     QStandardItem *item;
 
@@ -4423,7 +4423,7 @@ void EdytorNc::clipboardSave()
     settings.endArray();
 }
 
-void EdytorNc::clipboardLoad()
+void MainWindow::clipboardLoad()
 {
     QString itemText;
     QStandardItem *item;
@@ -4471,14 +4471,14 @@ void EdytorNc::clipboardLoad()
     clipboardTreeView->expandAll();
 }
 
-void EdytorNc::doShowInLineCalc()
+void MainWindow::doShowInLineCalc()
 {
     if (activeMdiChild()) {
         activeMdiChild()->showInLineCalc();
     }
 }
 
-void EdytorNc::watchFile(const QString &fileName, bool add)
+void MainWindow::watchFile(const QString &fileName, bool add)
 {
     if (fileChangeMonitor) {
         bool exists = fileChangeMonitor->files().contains(fileName);

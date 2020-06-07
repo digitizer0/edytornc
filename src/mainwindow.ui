@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>EdytorNc</class>
- <widget class="QMainWindow" name="EdytorNc">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -449,7 +449,7 @@
                <property name="toolTip">
                 <string>Right click to copy item back to system clipboard.
 Items with empty titles are the last five texts copied to system clipboard.
-Double click on item title to edit it. 
+Double click on item title to edit it.
 Items with non empty titles are not deleted automatically.</string>
                </property>
                <property name="autoScrollMargin">

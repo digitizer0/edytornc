@@ -12,7 +12,7 @@ INCLUDEPATH += include/
 
 #EdytorNC
 
-SOURCES += edytornc.cpp \
+SOURCES += mainwindow.cpp \
     main.cpp \
     highlighter.cpp \
     mdichild.cpp \
@@ -30,7 +30,7 @@ SOURCES += edytornc.cpp \
     serialportcfghelpdialog.cpp \
     filechecker.cpp
 
-HEADERS += include/edytornc.h \
+HEADERS += include/mainwindow.h \
     highlighter.h \
     mdichild.h \
     commoninc.h \
@@ -63,7 +63,7 @@ FORMS += i2mdialog.ui \
     i2mprogdialog.ui \
     setupdialog.ui \
     transmissiondialog.ui \
-    edytornc.ui \
+    mainwindow.ui \
     cleanupdialog.ui \
     swapaxesdialog.ui \
     newfiledialog.ui \

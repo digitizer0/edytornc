@@ -22,7 +22,7 @@
 
 #include "QtSingleApplication"
 
-#include "edytornc.h"
+#include "mainwindow.h"
 #include "utils/medium.h"
 
 
@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
     Medium &medium = Medium::instance();
     medium.addTranslationUnit("kdiff3");
     medium.updateTranslation();
-    EdytorNc *mw = EdytorNc::instance();
+    MainWindow *mw = MainWindow::instance();
 
     argProccesed = false;
 

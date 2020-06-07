@@ -20,8 +20,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef EDYTORNC_H
-#define EDYTORNC_H
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
 
 #include <QtWidgets>
 
@@ -39,26 +39,26 @@
 #include "commapp.h"
 #include "generalconfig.h"
 
-#include "ui_edytornc.h"
+#include "ui_mainwindow.h"
 
 class Medium;
 
-class EdytorNc : public QMainWindow, public Ui::EdytorNc
+class MainWindow : public QMainWindow, public Ui::MainWindow
 {
     Q_OBJECT
 
 public:
-    static EdytorNc *instance();
+    static MainWindow *instance();
 
-    ~EdytorNc();
+    ~MainWindow();
 
     void resizeEvent(QResizeEvent *event);
     void moveEvent(QMoveEvent *event);
 
 protected:
-    static EdytorNc *SINGLETON;
+    static MainWindow *SINGLETON;
 
-    EdytorNc(Medium *medium);
+    MainWindow(Medium *medium);
 
     Medium *mMedium;
 
@@ -375,4 +375,4 @@ private:
     QPointer<QFileSystemWatcher> fileChangeMonitor;
 };
 
-#endif // EDYTORNC_H
+#endif // MAINWINDOW_H

@@ -23,7 +23,7 @@
 #include <QPrintPreviewDialog>
 
 #include "mdichild.h"
-#include "edytornc.h"
+#include "mainwindow.h"
 
 
 MdiChild::MdiChild(QWidget *parent, Qt::WindowFlags f) : QWidget(parent, f)
